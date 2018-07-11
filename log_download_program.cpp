@@ -231,7 +231,7 @@ void Log_Download_Program::parse_arguments(int argc, char *argv[])
         }
     }
 
-    if(optind==argc){
+    if(optind==argc && !list){
         ::fprintf(stderr, "Failed to parse log numbers");
         abort();
     }
