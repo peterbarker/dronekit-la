@@ -231,6 +231,11 @@ void Log_Download_Program::parse_arguments(int argc, char *argv[])
         }
     }
 
+    if(optind==argc){
+        ::fprintf(stderr, "Failed to parse log numbers");
+        abort();
+    }
+
     for (auto index = optind; index < argc; index++) {
         uint16_t n = atoi(argv[index]);
         if (n == 0) {
