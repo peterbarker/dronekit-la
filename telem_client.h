@@ -1,10 +1,7 @@
 #ifndef _TELEM_CLIENT_H
 #define _TELEM_CLIENT_H
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#include "mavlink_c_library/ardupilotmega/mavlink.h"
-#pragma GCC diagnostic pop
+#include "mavlink_headers.h"
 
 #ifdef _WIN32
 #include "Winsock2.h"

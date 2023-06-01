@@ -3,10 +3,7 @@
 
 #include <vector>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#include "mavlink_c_library/ardupilotmega/mavlink.h"
-#pragma GCC diagnostic pop
+#include "mavlink_headers.h"
 
 #include "INIReader.h"
 #include "telem_client.h"
