@@ -590,7 +590,14 @@ void LA_MsgHandler_PM::xprocess(const uint8_t *msg)
     if (field_value(msg, "NLon", nlon)) {
         // copter-style PM message
         _vehicle->autopilot_set_overruns(nlon);
-        _vehicle->autopilot_set_loopcount(require_field_uint16_t(msg,"NLoop"));
+        uint16_t nloop;
+        if (field_value(msg, "NLoop", nloop)) {
+            // older-style log, pre-4.4
+        } else {
+            // require a newer-style log where it's "NL"
+            nloop = require_field_uint16_t(msg,"NL");
+        }
+        _vehicle->autopilot_set_loopcount(nloop);
         _vehicle->autopilot_set_slices_max(require_field_uint32_t(msg,"MaxT"));
     }
 }
