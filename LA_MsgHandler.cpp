@@ -671,11 +671,21 @@ void LA_MsgHandler_UBX3::xprocess(const uint8_t *msg)
 
 void LA_MsgHandler_VIBE::xprocess(const uint8_t *msg)
 {
+    return;
+
     if (!have_added_VIBE) {
-        _analyze->add_data_source("IMU_VIBE_0", "VIBE.Clip0");
-        _analyze->add_data_source("IMU_VIBE_1", "VIBE.Clip1");
-        _analyze->add_data_source("IMU_VIBE_2", "VIBE.Clip2");
-        have_added_VIBE = true;
+        uint8_t imu;
+        if (field_value(msg, "IMU", imu)) {
+            _analyze->add_data_source("IMU_VIBE_0", "VIBE[0].Clip");
+            _analyze->add_data_source("IMU_VIBE_1", "VIBE[1].Clip");
+            _analyze->add_data_source("IMU_VIBE_2", "VIBE[2].Clip");
+            have_added_VIBE = true;
+        } else {
+            _analyze->add_data_source("IMU_VIBE_0", "VIBE.Clip0");
+            _analyze->add_data_source("IMU_VIBE_1", "VIBE.Clip1");
+            _analyze->add_data_source("IMU_VIBE_2", "VIBE.Clip2");
+            have_added_VIBE = true;
+        }
     }
 
     for (uint8_t i=0; i<=2; i++) {
