@@ -644,14 +644,13 @@ void LA_MsgHandler_RATE::xprocess(const uint8_t *msg) {
 void LA_MsgHandler_UBX3::xprocess(const uint8_t *msg)
 {
     // map from instance number to GPS2 etc:
-    char gps_name[5] = {};
-    strncpy(gps_name, "GPS", 3);
+    char gps_name[5] { 'G', 'P', 'S'};
     const uint8_t instance = require_field_uint8_t(msg, "Instance");
     switch(instance) {
     case 0:
         break;
     default:
-        gps_name[3] = instance+1;
+        gps_name[3] = instance+1;  // what?  This should be '0'+  ?!!?
     };
 
     if (!have_added_UBX3) {
