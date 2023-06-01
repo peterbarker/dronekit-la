@@ -65,7 +65,7 @@ bool LA_MsgHandler::process_set_T(const uint8_t *msg)
         // uint64_t timestamp_max_delta = 100000000;
         uint64_t timestamp_max_delta = 1e010; // 1e10 ~= 167 minutes
         if (time_us < _vehicle->T()) {
-	    la_log(LOG_ERR, "Time going backwards? (%" PRIu64 " < %" PRIu64 "); skipping packet\n", time_us, _vehicle->T());
+	    la_log(LOG_ERR, "Time going backwards (t=%s)? (%" PRIu64 " < %" PRIu64 "); skipping packet\n", name().c_str(), time_us, _vehicle->T());
             return false;
         }
         if (time_us - _vehicle->T() > timestamp_max_delta) { // 100 seconds
