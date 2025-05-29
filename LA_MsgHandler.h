@@ -405,11 +405,9 @@ public:
     };
 
     void xprocess(const uint8_t *msg) override {
-        const uint8_t namelen = 255;
-        char name[namelen];
+        char name[255] {};
 
-        memset(name, 0, namelen);
-        require_field(msg, "Name", name, namelen);
+        require_field(msg, "Name", name, sizeof(name));
         float value = require_field_float(msg, "Value");
 
         _vehicle->param_set(name, value);
