@@ -349,6 +349,44 @@ bool LA_MsgHandler_GPS::find_T(const uint8_t *msg, uint64_t &T) {
     T = (uint64_t)timestamp * 1000;
     return true;
 }
+
+// courtesy of co-pilot:
+#include <iostream>
+#include <chrono>
+#include <ctime>
+
+// Function to convert GPS week and milliseconds to UTC timestamp
+std::time_t gpsToUtc(int gpsWeek, int gpsMilliseconds) {
+// GPS epoch start date: January 6, 1980
+std::tm gpsEpoch = {};
+gpsEpoch.tm_year = 1980 - 1900;
+gpsEpoch.tm_mon = 0;
+gpsEpoch.tm_mday = 6;
+gpsEpoch.tm_hour = 0;
+gpsEpoch.tm_min = 0;
+gpsEpoch.tm_sec = 0;
+std::time_t gpsEpochTime = std::mktime(&gpsEpoch);
+
+// Calculate total seconds from GPS week and milliseconds
+const int SECONDS_IN_WEEK = 604800;
+std::time_t gpsTime = gpsEpochTime + gpsWeek * SECONDS_IN_WEEK + gpsMilliseconds / 1000;
+
+// Leap seconds adjustment (example values, update as needed)
+const std::vector<std::pair<std::time_t, int>> leapSeconds = {
+{46828800, 1},  // January 1, 1981
+{78364800, 2},  // July 1, 1982
+// Add more leap seconds as needed
+};
+
+for (const auto& leap : leapSeconds) {
+if (gpsTime >= leap.first) {
+gpsTime += leap.second;
+}
+}
+
+return gpsTime;
+}
+
 void LA_MsgHandler_GPS::xprocess(const uint8_t *msg) {
     int32_t Lat = require_field_int32_t(msg, "Lat");
     int32_t Lng = require_field_int32_t(msg, "Lng");
@@ -370,9 +408,20 @@ void LA_MsgHandler_GPS::xprocess(const uint8_t *msg) {
         ::fprintf(stderr, "Unable to extract number of satellites visible from GPS message");
         abort();
     }
+
     gpsinfo()->set_satellites(nsats);
     gpsinfo()->set_hdop(require_field_int16_t(msg, "HDop")/(double)100.0f);
     gpsinfo()->set_fix_type(require_field_uint8_t(msg, "Status"));
+    gpsinfo()->set_latitude(Lat*1e-7);
+    gpsinfo()->set_longitude(Lng*1e-7);
+
+    const uint32_t gps_week = require_field_int32_t(msg, "GWk");
+    const uint32_t gps_msec = require_field_int32_t(msg, "GMS");
+    if (gps_week != 0) {
+        const uint32_t result = gpsToUtc(gps_week, gps_msec);
+        // printf("wk=%u ms=%u result=%u\n", gps_week, gps_msec, result);
+        gpsinfo()->set_timestamp_utc_ms(result * 1000L);
+    }
 }
 
 

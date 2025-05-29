@@ -73,6 +73,8 @@ void Analyzer_GPS_Fix::evaluate_gps(AnalyzerVehicle::GPSInfo *gpsinfo)
     FirstFixInfo *info = _result_ff[gpsinfo->name()];
     if (!info->first_3D_fix_found) {
         if (gpsinfo->fix_type() >= 3) {
+            set_first_latitude(gpsinfo->latitude());
+            set_first_longitude(gpsinfo->longitude());
             // new fix!
             if (_vehicle->time_since_boot_T() == 0) {
                 // we have a fix, but no system boot time.  This can
@@ -102,6 +104,13 @@ void Analyzer_GPS_Fix::evaluate_gps(AnalyzerVehicle::GPSInfo *gpsinfo)
             info->first_3D_fix_found = false;
         }
     }
+
+    if (first_timestamp_utc_ms() == 0) {
+        if (gpsinfo->timestamp_utc_ms() != 0) {
+            set_first_timestamp_utc_ms(gpsinfo->timestamp_utc_ms());
+        }
+    }
+
 }
 
 

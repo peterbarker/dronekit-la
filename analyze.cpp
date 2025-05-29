@@ -141,7 +141,7 @@ void Analyze::instantiate_analyzers(INIReader *config)
         la_log(LOG_INFO, "Failed to create analyzer_good_xkf");
     }
 
-    Analyzer_GPS_Fix *analyzer_gps_fix = new Analyzer_GPS_Fix(vehicle,_data_sources);
+    analyzer_gps_fix = new Analyzer_GPS_Fix(vehicle,_data_sources);
     if (analyzer_gps_fix != NULL) {
         configure_analyzer(config, analyzer_gps_fix);
     } else {
@@ -301,6 +301,19 @@ void Analyze::results_json_add_statistics(Json::Value &root)
         root["maximum-velocity-units"] = "metres/second";
     }
 
+    if (analyzer_gps_fix->first_timestamp_utc_ms() != 0) {
+        root["first-timestamp-utc"] = analyzer_gps_fix->first_timestamp_utc_ms() * 0.001;
+        root["first-timestamp-utc-units"] = "seconds";
+    }
+
+    {
+        const float first_latitude = analyzer_gps_fix->first_latitude();
+        root["first-gps-latitude"] = first_latitude;
+        root["first-gps-latitude-units"] = "degrees";
+        const float first_longitude = analyzer_gps_fix->first_longitude();
+        root["first-gps-longitude"] = first_longitude;
+        root["first-gps-longitude-units"] = "degrees";
+    }
 }
 
 void Analyze::results_json(Json::Value &root)

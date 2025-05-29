@@ -428,6 +428,15 @@ namespace AnalyzerVehicle {
         uint8_t satellites() { return _satellites_visible; }
         void set_satellites(uint8_t satellites) { _satellites_visible = satellites; }
 
+        uint64_t timestamp_utc_ms() { return _timestamp_utc_ms; }
+        void set_timestamp_utc_ms(uint64_t ts) { _timestamp_utc_ms = ts; }
+
+        void set_latitude(float latitude) { _latitude = latitude; }
+        float latitude() const { return _latitude; }
+
+        void set_longitude(float longitude) { _longitude = longitude; }
+        float longitude() const { return _longitude; }
+
     private:
         std::string _name;
 
@@ -435,6 +444,11 @@ namespace AnalyzerVehicle {
         double _sacc = 0;
         uint8_t _satellites_visible = 0;
         uint8_t _fix_type = 0;
+
+        uint64_t _timestamp_utc_ms = 0;  // milliseconds since epoch
+
+        float _latitude = 0;
+        float _longitude = 0;
     };
 
     /* may need to factor and subclass this for non-APM-on-PixHawk: */

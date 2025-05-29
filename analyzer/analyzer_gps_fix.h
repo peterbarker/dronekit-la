@@ -67,6 +67,13 @@ public:
 
     bool configure(INIReader *config) override;
 
+    uint64_t first_timestamp_utc_ms() { return _first_timestamp_utc_ms;  }
+
+    void set_first_latitude(float latitude) { _first_latitude = latitude; }
+    float first_latitude() const { return _first_latitude; }
+    void set_first_longitude(float longitude) { _first_longitude = longitude; }
+    float first_longitude() const { return _first_longitude; }
+
 private:
 
     void evaluate() override;
@@ -92,6 +99,9 @@ private:
     void add_no_firstfixtime_result();
 
 
+    void set_first_timestamp_utc_ms(uint64_t timestamp_ms) { _first_timestamp_utc_ms = timestamp_ms;  }
+    uint64_t _first_timestamp_utc_ms = 0;
+
     uint8_t _satellites_min = 5;
     double _hdop_min = 5.0f;
 
@@ -109,6 +119,9 @@ private:
 
     float _sacc_threshold_warn = 1.0f;
     float _sacc_threshold_fail = 1.5f;
+
+    float _first_latitude = 0.0;
+    float _first_longitude = 0.0;
 };
 
 #endif
