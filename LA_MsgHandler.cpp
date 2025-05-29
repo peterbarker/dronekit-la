@@ -604,8 +604,10 @@ LA_MsgHandler_XKF1::LA_MsgHandler_XKF1(std::string name,
 }
 
 void LA_MsgHandler_XKF1::xprocess(const uint8_t *msg) {
-    uint8_t core = require_field_uint8_t(msg, "C");
-    if (core != 0) {
+    uint8_t core;
+        // very old logs don't have this
+    if (field_value(msg, "C", core) &&
+        core != 0) {
         return;
     }
     int16_t Roll = require_field_int16_t(msg, "Roll");
