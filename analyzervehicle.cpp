@@ -46,6 +46,9 @@ void Base::switch_vehicletype(Base *&_vehicle, vehicletype_t newtype) {
 
 void Base::set_T(const uint64_t time_us)
 {
+    if (time_us > 10153448580 || time_us == 0) {
+        abort();
+    }
     if (time_us < _T) {
         ::fprintf(stderr, "time going backwards (%" PRIu64 " < %" PRIu64 ") (delta=%" PRIi64 ")\n", time_us, _T, time_us - _T);
        return;

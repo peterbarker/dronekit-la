@@ -26,6 +26,9 @@ void Analyzer_Ever_Flew::evaluate()
             _fly_start_time = _vehicle->T();
         } else {
             // stopped flying
+            if (_fly_start_time > _vehicle->T()) {
+                abort();
+            }
             _total_flight_time += _vehicle->T() - _fly_start_time;
         }
         _was_flying = is_flying;
