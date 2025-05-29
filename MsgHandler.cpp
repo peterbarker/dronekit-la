@@ -239,6 +239,31 @@ void MsgHandler::field_not_found(const uint8_t *msg, const char *label)
     abort();
 }
 
+uint8_t MsgHandler::require_field_type(const char *label)
+{
+    uint8_t type;
+    if (! field_type(label, type)) {
+        abort();
+    }
+    return type;
+}
+
+bool MsgHandler::field_type(const char *label, uint8_t &ret)
+{
+    struct format_field_info *info = find_field_info(label);
+    if (info == NULL) {
+        return false;
+    }
+
+    uint8_t offset = info->offset;
+    if (offset == 0) {
+        return false;
+    }
+
+    ret = info->type;
+    return true;
+}
+
 void MsgHandler::require_field(const uint8_t *msg, const char *label, char *buffer, uint8_t bufferlen)
 {
     if (! field_value(msg, label, buffer, bufferlen)) {

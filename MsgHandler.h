@@ -27,6 +27,9 @@ public:
     // retrieve a comma-separated list of all labels
     void string_for_labels(char *buffer, uint8_t bufferlen);
 
+    uint8_t require_field_type(const char *label);
+    bool field_type(const char *label, uint8_t &type_ret);
+
     bool field_value(const uint8_t *msg, const char *label, Vector3f &ret);
 
     // field_value - retrieve the value of a field from the supplied message

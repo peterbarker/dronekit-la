@@ -29,6 +29,10 @@ struct PACKED log_Format {
     char name[4];
     char format[16];
     char labels[64];
+
+    // returns true if this format specifies an instance field, and
+    // fills in the offset of that field in the return parameter
+    bool instance_field_offset(uint8_t &offs) const;
 };
 
 

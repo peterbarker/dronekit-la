@@ -158,26 +158,51 @@ LA_MsgHandler_ATT::LA_MsgHandler_ATT(std::string name, const struct log_Format &
 }
 
 void LA_MsgHandler_ATT::xprocess(const uint8_t *msg) {
-    int16_t DesRoll = require_field_int16_t(msg, "DesRoll");
-    int16_t Roll = require_field_int16_t(msg, "Roll");
-    int16_t DesPitch = require_field_int16_t(msg, "DesPitch");
-    int16_t Pitch = require_field_int16_t(msg, "Pitch");
-    uint16_t DesYaw = require_field_uint16_t(msg, "DesYaw");
-    uint16_t Yaw = require_field_uint16_t(msg, "Yaw");
+    uint8_t DesRoll_type = require_field_type("DesRoll");
+    if (DesRoll_type == 'f') {
+        // newer-style logs, float degrees
+        float DesRoll = require_field_float(msg, "DesRoll");
+        float Roll = require_field_float(msg, "Roll");
+        float DesPitch = require_field_float(msg, "DesPitch");
+        float Pitch = require_field_float(msg, "Pitch");
+        float DesYaw = require_field_float(msg, "DesYaw");
+        float Yaw = require_field_float(msg, "Yaw");
 
-    // _vehicle->set_roll(rad_to_deg(Roll/100.0f));
-    // _vehicle->set_pitch(rad_to_deg(Pitch/100.0f));
-    _vehicle->set_roll(Roll/(double)100.0f);
-    _vehicle->set_pitch(Pitch/(double)100.0f);
-    _vehicle->set_yaw(Yaw);
+        // _vehicle->set_roll(rad_to_deg(Roll/100.0f));
+        // _vehicle->set_pitch(rad_to_deg(Pitch/100.0f));
+        _vehicle->set_roll(Roll);
+        _vehicle->set_pitch(Pitch);
+        _vehicle->set_yaw(Yaw);
 
-    _vehicle->set_desroll((float)DesRoll/(double)100.0f);
-    _vehicle->set_despitch((float)DesPitch/(double)100.0f);
-    _vehicle->set_desyaw(DesYaw);
+        _vehicle->set_desroll(DesRoll);
+        _vehicle->set_despitch(DesPitch);
+        _vehicle->set_desyaw(DesYaw);
 
-    _vehicle->attitude_estimate("ATT")->set_roll(T(), Roll/(double)100.0f);
-    _vehicle->attitude_estimate("ATT")->set_pitch(T(), Pitch/(double)100.0f);
-    _vehicle->attitude_estimate("ATT")->set_yaw(T(), Yaw);
+        _vehicle->attitude_estimate("ATT")->set_roll(T(), Roll);
+        _vehicle->attitude_estimate("ATT")->set_pitch(T(), Pitch);
+        _vehicle->attitude_estimate("ATT")->set_yaw(T(), Yaw);
+    } else {
+        int16_t DesRoll = require_field_int16_t(msg, "DesRoll");
+        int16_t Roll = require_field_int16_t(msg, "Roll");
+        int16_t DesPitch = require_field_int16_t(msg, "DesPitch");
+        int16_t Pitch = require_field_int16_t(msg, "Pitch");
+        uint16_t DesYaw = require_field_uint16_t(msg, "DesYaw");
+        uint16_t Yaw = require_field_uint16_t(msg, "Yaw");
+
+        // _vehicle->set_roll(rad_to_deg(Roll/100.0f));
+        // _vehicle->set_pitch(rad_to_deg(Pitch/100.0f));
+        _vehicle->set_roll(Roll/(double)100.0f);
+        _vehicle->set_pitch(Pitch/(double)100.0f);
+        _vehicle->set_yaw(Yaw);
+
+        _vehicle->set_desroll((float)DesRoll/(double)100.0f);
+        _vehicle->set_despitch((float)DesPitch/(double)100.0f);
+        _vehicle->set_desyaw(DesYaw);
+
+        _vehicle->attitude_estimate("ATT")->set_roll(T(), Roll/(double)100.0f);
+        _vehicle->attitude_estimate("ATT")->set_pitch(T(), Pitch/(double)100.0f);
+        _vehicle->attitude_estimate("ATT")->set_yaw(T(), Yaw);
+    }
 }
 
 
